@@ -1,0 +1,1 @@
+INSERT INTO People (Name, DateOfBirth) VALUES ('Saksham', '2006-11-28'), ('Vaishnavi', '2013-09-03')
