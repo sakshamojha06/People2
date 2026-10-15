@@ -1,13 +1,12 @@
 using API.Model;
 
-namespace API.Service
+namespace API.Service;
+
+public interface IPersonService
 {
-    public interface IPersonService
-    {
-        public Task<List<Person>> GetAll();
-        public Task<Person?> GetById(int id);
-        public Task<Person> Create(Person person);
-        public Task<bool> Update(int id, Person person);
-        public Task<bool> Delete(int id);
-    }
+    public Task<List<Person>> GetAll();
+    public Task<Person?> GetById(int id);
+    public Task<Person> Create(Person person);
+    public Task<bool> Update(int id, Person person);
+    public Task<bool> Delete(int id);
 }
