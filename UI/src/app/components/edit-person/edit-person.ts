@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PersonService } from '../../services/person';
 import { Person } from '../../models/person';
+import { NotificationService } from '../../services/notification';
 
 @Component({
   selector: 'app-edit-person',
@@ -17,7 +17,7 @@ export class EditPerson implements OnInit {
   private personService = inject(PersonService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
+  private notifications = inject(NotificationService);
 
   person: Person = {
     id: 0,
@@ -34,9 +34,7 @@ export class EditPerson implements OnInit {
         this.person.dateOfBirth = data.dateOfBirth.substring(0, 10);
       },
       error: () => {
-        this.snackBar.open('Unable to load person!', 'Close', {
-          duration: 3000
-        });
+        this.notifications.show('Unable to load person.', 'danger');
         this.router.navigate(['/people']);
       }
     });
@@ -49,16 +47,11 @@ export class EditPerson implements OnInit {
 
     this.personService.Update(this.person.id, this.person).subscribe({
       next: () => {
-        this.snackBar.open('Person updated successfully!', 'Close', {
-          duration: 3000
-        });
-
+        this.notifications.show('Person updated successfully.', 'success');
         this.router.navigate(['/people']);
       },
       error: () => {
-        this.snackBar.open('Unable to update person!', 'Close', {
-          duration: 3000
-        });
+        this.notifications.show('Unable to update person.', 'danger');
       }
     });
   }

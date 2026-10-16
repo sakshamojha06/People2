@@ -3,3 +3,10 @@
 <div class="container">
     <router-outlet></router-outlet>
 </div>
+
+@if (notifications.message(); as message) {
+    <div class="alert alert-{{ notifications.type() }} alert-dismissible fade show app-notification" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" aria-label="Close" (click)="notifications.dismiss()"></button>
+    </div>
+}

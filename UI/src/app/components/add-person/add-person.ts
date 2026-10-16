@@ -2,8 +2,8 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { PersonService } from '../../services/person';
+import { NotificationService } from '../../services/notification';
 
 @Component({
   selector: 'app-add-person',
@@ -16,7 +16,7 @@ export class AddPerson {
 
   private personService = inject(PersonService);
   private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
+  private notifications = inject(NotificationService);
 
   person = {
     name: '',
@@ -34,16 +34,11 @@ export class AddPerson {
       dateOfBirth: this.person.dateOfBirth
     }).subscribe({
       next: () => {
-        this.snackBar.open('Person added successfully!', 'Close', {
-          duration: 3000
-        });
-
+        this.notifications.show('Person added successfully.', 'success');
         this.router.navigate(['/people']);
       },
       error: () => {
-        this.snackBar.open('Unable to add person!', 'Close', {
-          duration: 3000
-        });
+        this.notifications.show('Unable to add person.', 'danger');
       }
     });
   }

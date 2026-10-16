@@ -1,14 +1,13 @@
-import { Component, inject, OnInit, signal, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { PersonService } from '../../services/person';
 import { Person } from '../../models/person';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { NotificationService } from '../../services/notification';
 
 @Component({
   standalone: true,
-  imports: [DatePipe, RouterLink, MatDialogModule],
+  imports: [DatePipe, RouterLink],
   selector: 'app-people-list',
   styleUrl: './people-list.css',
   templateUrl: './people-list.html',
@@ -16,14 +15,12 @@ import { RouterLink } from '@angular/router';
 export class PeopleList implements OnInit {
 
   private personService = inject(PersonService);
-  private snackBar = inject(MatSnackBar);
-  private dialog = inject(MatDialog);
-
-  @ViewChild('deleteDialog') deleteDialog!: TemplateRef<unknown>;
+  private notifications = inject(NotificationService);
 
   people = signal<Person[]>([]);
   loading = signal(false);
   errorMessage = signal('');
+  personPendingDelete = signal<Person | null>(null);
 
   ngOnInit(): void {
     this.loadPeople();
@@ -46,27 +43,30 @@ export class PeopleList implements OnInit {
     });
   }
 
-  deletePerson(id: number): void {
-    this.dialog.open(this.deleteDialog)
-      .afterClosed()
-      .subscribe(result => {
+  confirmDelete(person: Person): void {
+    this.personPendingDelete.set(person);
+  }
 
-        if (result) {
-          this.personService.Delete(id).subscribe({
-            next: () => {
-              this.snackBar.open('Person deleted successfully!', 'Close', {
-                duration: 3000
-              });
-              this.loadPeople();
-            },
-            error: () => {
-              this.snackBar.open('Unable to delete person!', 'Close', {
-                duration: 3000
-              });
-            }
-          });
-        }
+  cancelDelete(): void {
+    this.personPendingDelete.set(null);
+  }
 
-      });
+  deletePerson(): void {
+    const person = this.personPendingDelete();
+    if (!person) {
+      return;
+    }
+
+    this.personService.Delete(person.id).subscribe({
+      next: () => {
+        this.personPendingDelete.set(null);
+        this.people.update(people => people.filter(item => item.id !== person.id));
+        this.notifications.show(`${person.name} deleted successfully.`, 'success');
+      },
+      error: () => {
+        this.personPendingDelete.set(null);
+        this.notifications.show('Unable to delete person.', 'danger');
+      }
+    });
   }
 }

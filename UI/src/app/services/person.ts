@@ -19,15 +19,15 @@ export class PersonService {
         return this.http.get<Person>(`${this.apiUrl}/${id}`);
     }
 
-    Create(person: Person): Observable<any> {
-        return this.http.post(this.apiUrl, person);
+    Create(person: Person): Observable<string> {
+        return this.http.post(this.apiUrl, person, { responseType: 'text' });
     }
 
-    Update(id: number, person: Person): Observable<any> {
-        return this.http.put(`${this.apiUrl}/${id}`, person);
+    Update(id: number, person: Person): Observable<string> {
+        return this.http.put(`${this.apiUrl}/${id}`, person, { responseType: 'text' });
     }
 
-    Delete(id: number): Observable<any> {
-        return this.http.delete(`${this.apiUrl}/${id}`);
+    Delete(id: number): Observable<string> {
+        return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
     }
 }
