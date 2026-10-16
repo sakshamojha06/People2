@@ -3,7 +3,7 @@
     <div class="page-header">
         <h2>People List</h2>
 
-        <button class="btn btn-success" routerLink="/add-people">
+        <button class="btn btn-success" routerLink="/add-person">
             <i class="bi bi-plus-lg"></i>
             Add Person
         </button>
@@ -37,7 +37,7 @@
                             <td>{{ person.name }}</td>
                             <td>{{ person.dateOfBirth | date: 'dd-MM-yyyy' }}</td>
                             <td class="actions">
-                                <button class="btn btn-primary btn-sm me-2">
+                                <button class="btn btn-primary btn-sm me-2" [routerLink]="['/edit-person', person.id]">
                                     <i class="bi bi-pencil-square"></i>
                                     Edit
                                 </button>
