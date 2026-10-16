@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, TemplateRef, ViewChild } from '@angular/core';
 import { PersonService } from '../../services/person';
 import { Person } from '../../models/person';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -21,27 +21,27 @@ export class PeopleList implements OnInit {
 
   @ViewChild('deleteDialog') deleteDialog!: TemplateRef<unknown>;
 
-  people: Person[] = [];
-  loading = false;
-  errorMessage = '';
+  people = signal<Person[]>([]);
+  loading = signal(false);
+  errorMessage = signal('');
 
   ngOnInit(): void {
     this.loadPeople();
   }
 
   loadPeople(): void {
-    this.loading = true;
-    this.errorMessage = '';
+    this.loading.set(true);
+    this.errorMessage.set('');
 
     this.personService.getAll().subscribe({
       next: (data) => {
-        this.people = data;
-        this.loading = false;
+        this.people.set(data);
+        this.loading.set(false);
       },
       error: (error) => {
         console.error(error);
-        this.errorMessage = 'Unable to load people';
-        this.loading = false;
+        this.errorMessage.set('Unable to load people');
+        this.loading.set(false);
       }
     });
   }

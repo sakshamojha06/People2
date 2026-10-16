@@ -3,19 +3,19 @@
     <div class="page-header">
         <h2>People List</h2>
 
-        <button class="btn btn-success">
+        <button class="btn btn-success" routerLink="/add-people">
             <i class="bi bi-plus-lg"></i>
             Add Person
         </button>
     </div>
 
-    @if (loading) {
+    @if (loading()) {
         <p class="message">Loading people...</p>
     }
-    @else if (errorMessage) {
-        <p class="error">{{ errorMessage }}</p>
+    @else if (errorMessage()) {
+        <p class="error">{{ errorMessage() }}</p>
     }
-    @else if (people.length === 0) {
+    @else if (people().length === 0) {
         <p class="message">No people found.</p>
     }
     @else {
@@ -31,7 +31,7 @@
                 </thead>
 
                 <tbody>
-                    @for (person of people; track person.id) {
+                    @for (person of people(); track person.id) {
                         <tr>
                             <td>{{ person.id }}</td>
                             <td>{{ person.name }}</td>
